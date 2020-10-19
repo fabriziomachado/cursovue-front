@@ -4,6 +4,9 @@
       <b-row>
         <b-col cols="12">
 
+          <div>{{ new Date() | dateFormat('DD/MM/YYYY') }}</div>
+          <div>{{ 1000000 | numericFormat }}</div>
+
           <b-card class="p-2 h-100" no-body>
               <div class="text-right">
                 <button class="btn btn-success" @click="orderChange">Mudar</button>
@@ -40,6 +43,8 @@ export default {
     methods: {
         orderChange(){
             this.order = this.order === 'id' ? 'name' : 'id';
+            // Success notification
+            this.$noty.success("Your profile has been saved!")
         }
     },
     computed: {
