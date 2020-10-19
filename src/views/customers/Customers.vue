@@ -1,16 +1,27 @@
 <template>
- <b-card class="p-2 h-100" no-body>
-    <div class="text-right">
-      <button class="btn btn-success" @click="orderChange">Mudar</button>
-      <b-button @click="orderChange">Order by {{ order }}</b-button>
-      <label class="mx-4">{{ order }}</label>
-      <router-link class="ml-auto btn btn-warning" to="new">Novo</router-link>
+  <div class="wrapper">
+    <div class="animated fadeIn">
+      <b-row>
+        <b-col cols="12">
+
+          <b-card class="p-2 h-100" no-body>
+              <div class="text-right">
+                <button class="btn btn-success" @click="orderChange">Mudar</button>
+                <b-button @click="orderChange">Order by {{ order }}</b-button>
+                <label class="mx-4">{{ order }}</label>
+                <router-link class="ml-auto btn btn-warning" to="new">Novo</router-link>
+              </div>
+              <div>
+                <b-form-select v-model="order" :options="options"></b-form-select>
+              </div>
+              <b-table class="table-dark" striped hover :items="orderedItens"></b-table>
+          </b-card>
+
+        </b-col>
+      </b-row>
     </div>
-    <div>
-      <b-form-select v-model="order" :options="options"></b-form-select>
-    </div>
-    <b-table class="table-dark" striped hover :items="orderedItens"></b-table>
- </b-card>
+  </div>
+
 </template>
 
 <script>
