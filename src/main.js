@@ -7,6 +7,21 @@ import VueFilterDateFormat from '@vuejs-community/vue-filter-date-format'
 import VueFilterNumericFormat from '@vuejs-community/vue-filter-numeric-format'
 import VueNoty from 'vuejs-noty'
 
+//import VueUploadComponent from 'vue-upload-component'
+//Vue.component('file-upload', VueUploadComponent)
+
+Vue.filter('formatSize',  (size) => {
+  if (size > 1024 * 1024 * 1024 * 1024) {
+    return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' TB'
+  } else if (size > 1024 * 1024 * 1024) {
+    return (size / 1024 / 1024 / 1024).toFixed(2) + ' GB'
+  } else if (size > 1024 * 1024) {
+    return (size / 1024 / 1024).toFixed(2) + ' MB'
+  } else if (size > 1024) {
+    return (size / 1024).toFixed(2) + ' KB'
+  }
+  return size.toString() + ' B'
+})
 
 Vue.use(VueFilterDateFormat, {
   dayOfWeekNames: [
@@ -27,7 +42,6 @@ Vue.use(VueFilterDateFormat, {
   // Timezone offset, in minutes (0 - UTC, 180 - Russia, undefined - current)
   timezone: -3
 });
-
 Vue.use(VueFilterNumericFormat, {
   decimalSeparator: ',',
   fractionDigitsMax: 2,
@@ -35,9 +49,9 @@ Vue.use(VueFilterNumericFormat, {
   fractionDigitsSeparator: ',',
   thousandsDigitsSeparator: '.'
 });
-
 Vue.use(VueNoty)
 Vue.use(BootstrapVue)
+
 
 /* eslint-disable no-new */
 new Vue({
