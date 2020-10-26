@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import { isLogged } from "@/services/auth";
+
 // Containers
 const DefaultContainer = () => import('@/containers/DefaultContainer')
 
@@ -69,6 +71,9 @@ function configRoutes() {
       redirect: '/dashboard',
       name: 'Home',
       component: DefaultContainer,
+      meta: {
+        requireAuth: true
+      },
       children: [
         {
           path: 'dashboard',
@@ -313,6 +318,11 @@ function configRoutes() {
       ]
     },
     {
+      path: '/login',
+      name: 'Login',
+      component: Login
+    },
+    {
       path: '/pages',
       redirect: '/pages/404',
       name: 'Pages',
@@ -331,11 +341,6 @@ function configRoutes() {
           component: Page500
         },
         {
-          path: 'login',
-          name: 'Login',
-          component: Login
-        },
-        {
           path: 'register',
           name: 'Register',
           component: Register
@@ -345,9 +350,26 @@ function configRoutes() {
   ]
 }
 
-export default new Router({
+const router =  new Router({
   mode: 'hash', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'open active',
   scrollBehavior: () => ({ y: 0 }),
   routes: configRoutes()
 })
+
+router.beforeEach( (to, from, next) => {
+  if( to.matched.some( record => record.meta.requireAuth )){
+    if(!isLogged()) {
+      next({ 
+        path: '/login', 
+        query: { redirect: to.fullPath }
+      })
+    }else{
+      next()
+    }
+  } else{
+    next()
+  }
+} )
+
+export default router
