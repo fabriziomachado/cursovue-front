@@ -10,7 +10,7 @@
           <b-card class="p-2 h-100" no-body>
               <div class="text-right">
                 <button class="btn btn-success" @click="orderChange">Mudar</button>
-                <b-button @click="orderChange">Order by {{ order }}</b-button>
+                <b-button @click="orderChange" class="ml-2">Order by {{ order }}</b-button>
                 <label class="mx-4">{{ order }}</label>
                 <router-link class="ml-auto btn btn-warning" to="new">Novo</router-link>
               </div>
