@@ -10,7 +10,7 @@
       <b-dropdown-header tag="div" class="text-center">
         <strong>User</strong>
       </b-dropdown-header>
-      <b-dropdown-item><i class="fa fa-user" /> Profile</b-dropdown-item>
+      <b-dropdown-item to="/profile"><i class="fa fa-user" /> Profile</b-dropdown-item>
       <b-dropdown-item @click="logout"><i class="fa fa-lock" /> Sair</b-dropdown-item>
     </template>
   </AppHeaderDropdown>
