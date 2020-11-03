@@ -10,6 +10,7 @@ const DefaultContainer = () => import('@/containers/DefaultContainer')
 const Dashboard = () => import('@/views/Dashboard')
 const Customers = () => import('@/views/customers/Customers')
 const Customer = () => import('@/views/customers/Customer')
+const Profile = () => import('@/views/pages/Profile.vue')
 
 const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
@@ -79,6 +80,11 @@ function configRoutes() {
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard
+        },
+        {
+          path: 'profile',
+          name: 'Profile',
+          component: Profile
         },
         {
           path: 'customers',
@@ -360,8 +366,8 @@ const router =  new Router({
 router.beforeEach( (to, from, next) => {
   if( to.matched.some( record => record.meta.requireAuth )){
     if(!isLogged()) {
-      next({ 
-        path: '/login', 
+      next({
+        path: '/login',
         query: { redirect: to.fullPath }
       })
     }else{
