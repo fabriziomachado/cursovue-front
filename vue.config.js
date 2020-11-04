@@ -2,7 +2,7 @@ module.exports = {
   lintOnSave: true,
   runtimeCompiler: true,
   publicPath: '/',
-    devServer: {
+  devServer: {
     disableHostCheck: true
   }
 }
