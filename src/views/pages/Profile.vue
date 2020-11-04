@@ -6,18 +6,25 @@
         <b-col cols="12" md="4">
           <!-- AVATR -->
           <b-card class="text-center" >
-            <b-img class="d-box" width="250" :src="profileImage" />
-            <div class="text-center d-inline">
-              <b-button class="mt-3" variant="success">Alterar</b-button>
+            <b-img center width="220" :src="profileImage" />
+               <!-- <b-button class="mt-3" variant="success">Alterar</b-button> -->
+
+              <FileUpload
+                accept="image/*"
+                uploadURL="@me/upload"
+                @uploaded="onFileUpload"
+              >
+              Alterar
+              </FileUpload>
+
               <b-button class="mt-3 ml-2" variant="danger">Remover</b-button>
-            </div>
           </b-card>
         </b-col>
 
         <b-col cols="12" md="8">
           <!-- FORMULARIO -->
           <b-card>
-            <b-form @submit="onSubmit">
+            <b-form @submit.prevent="onSubmit">
               <b-form-group label="Nome">
                 <b-form-input
                   v-model="profile.name"
@@ -95,11 +102,21 @@
 </template>
 
 <script>
+import FileUpload from '@/components/FileUpload.vue'
 
 export default {
+  components: { FileUpload },
   data () {
     return {
       profile: {},
+    }
+  },
+  methods: {
+    onSubmit() {
+      return false
+    },
+    onFileUpload() {
+      this.$noty.success('arquivo carregado com sucesso')
     }
   },
   computed: {
@@ -109,10 +126,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.app {
-  background-image: url('https://source.unsplash.com/random');
-  background-size: cover;
-}
-</style>
