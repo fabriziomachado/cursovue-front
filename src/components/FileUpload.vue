@@ -48,6 +48,8 @@ export default {
       try {
         const [ file ]  = this.$refs.inputFileUpload.files
 
+        //if (true) throw "erro!!!"
+
         if(file){
           let formData = new FormData()
           formData.append(this.fildName, file)
@@ -58,8 +60,7 @@ export default {
         }
 
       } catch (error) {
-        this.$noty.error('upload com problemas')
-        console.log(error)
+        this.$emit('error', error)
       }
 
       this.isUploading = false
