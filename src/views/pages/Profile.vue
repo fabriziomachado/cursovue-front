@@ -13,7 +13,9 @@
                 accept="image/*"
                 uploadURL="@me/upload"
                 @uploaded="onFileUpload"
+                @error="onError"
               >
+              <i class="fa fa-file mr-2"></i>
               Alterar
               </FileUpload>
 
@@ -117,6 +119,10 @@ export default {
     },
     onFileUpload() {
       this.$noty.success('arquivo carregado com sucesso')
+    },
+    onError(error) {
+        this.$noty.error('Problemas no upload')
+        console.error(error)
     }
   },
   computed: {

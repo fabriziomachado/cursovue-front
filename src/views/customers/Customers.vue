@@ -17,7 +17,42 @@
               <div>
                 <b-form-select v-model="order" :options="options"></b-form-select>
               </div>
-              <b-table class="table-dark" striped hover :items="orderedItens"></b-table>
+
+              <b-table
+                class="-table-dark"
+                striped
+                hover
+                :fields="tableFields"
+                :items="orderedItens">
+
+                <template v-slot:cell(email)="{ item }">
+                  <a target="_blank" :href="`mailto:${ item.email }`">{{ item.email }}</a>
+                </template>
+
+                 <template v-slot:cell(action)="{ item }">
+                  <b-button
+                    :to="{name: 'Edit', params: { id: item.id }}"
+                    variant="link" size=""
+                    class="text-primary p-10 mx-1">
+                      <i class="fa fa-edit"></i>
+                  </b-button>
+                  <b-button
+                    @click="remove(item)"
+                    variant="link" size=""
+                    class="text-danger p-10 mx-1">
+                      <i class="fa fa-trash"></i>
+                  </b-button>
+                 </template>
+
+              </b-table>
+
+              <b-pagination
+                  v-model="page"
+                  :total-rows="total"
+                  :per-page="perPage"
+                  align="right">
+              </b-pagination>
+
           </b-card>
 
         </b-col>
@@ -28,19 +63,23 @@
 </template>
 
 <script>
+import data from './customers.json'
+
 export default {
     data: () => {
      return {
-        items: [
-          { id: 1, name: 'Dickerso', phone: 'Macdonald' , email: "john@doe.com.br" },
-          { id: 2, name: 'Larsen', phone: 'Shaw' , email: "john@doe.com" },
-          { id: 3, name: 'Geneva', phone: 'Wilson' , email: "john@doe.com" },
-          { id: 4, name: 'Jami', phone: 'Carney' , email: "john@doe.com" }
-        ],
-        order: 'id'
+        items: data,
+        page: 1,
+        perPage: 20,
+        total: 100,
+        order: 'id',
       }
     },
     methods: {
+
+        remove({id, name}) {
+          this.$noty.success(`${name} (${id}) excluido!`)
+        },
         orderChange(){
             this.order = this.order === 'id' ? 'name' : 'id';
             // Success notification
@@ -48,6 +87,15 @@ export default {
         }
     },
     computed: {
+      tableFields() {
+        return [
+          { key: 'id', label: '#', isRowHeader: true},
+          { key: 'name', label: 'Nome'},
+          { key: 'phone', label: 'Telefone'},
+          { key: 'email', label: 'email'},
+          { key: 'action', label: '', tdClass: 'text-right'},
+        ]
+      },
       options () {
         return [
           { value: 'name', text: 'Nome' },
@@ -58,7 +106,7 @@ export default {
         orderedItens () {
             const compare = (a, b) => (a[this.order] > b[this.order]) - (a[this.order] < b[this.order])
             const ordered =  [...this.items].sort(compare)
-           
+
             return ordered
         }
     }

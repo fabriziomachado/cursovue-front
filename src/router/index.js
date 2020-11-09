@@ -95,6 +95,7 @@ function configRoutes() {
           children: [
             { path: '', name: 'List', component: Customers },
             { path: 'new', name: 'New', component: Customer },
+            { path: ':id', name: 'Edit', component: Customer },
           ]
         },
         {
