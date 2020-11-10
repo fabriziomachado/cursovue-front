@@ -4,9 +4,9 @@
     <div class="animated fadeIn">
 
       <b-row>
-        <b-col cols="12">
+        <b-col md="8" class="mx-auto">
           <!-- card formulario de clientes -->
-          <b-card>
+          <b-card show-footer>
             <div slot="header">
               <strong>Cliente </strong> <small>Form</small>
             </div>
@@ -14,7 +14,7 @@
               <b-col sm="12">
                 <!-- formulário principal -->
                 <b-form @submit.prevent="onSubmit">
-                  
+
                   <b-form-group label="Your Name:">
                     <b-form-input
                       v-model="form.name"
@@ -40,8 +40,14 @@
                     ></b-form-input>
                   </b-form-group>
 
-                  <b-button type="submit" variant="primary">Salvar</b-button>
-                  <b-button class="ml-2" @click="$router.go(-1)" variant="danger">Cancelar</b-button>
+                  <div class="text-right" slot="footer">
+                    <b-button type="submit" variant="primary">
+                        <i class="fa fa-save mr-2"></i>Salvar
+                    </b-button>
+                    <b-button class="ml-2" @click="$router.go(-1)" variant="danger">
+                        <i class="fa fa-times-circle mr-2"></i>Cancelar
+                    </b-button>
+                  </div>
 
                 </b-form>
               </b-col>
@@ -50,7 +56,7 @@
           </b-card>
         </b-col>
       </b-row>
-    
+
 
       <b-row>
         <b-col cols="12">
@@ -59,7 +65,7 @@
             <div slot="header">
               <strong>Upload </strong> <small>files</small>
             </div>
-           
+
            <!-- Lista de uploads -->
             <ul>
               <li v-for="(file, index) in files" :key="file.id">
@@ -94,7 +100,7 @@
               <i class="fa fa-stop" aria-hidden="true"></i>
               Stop Upload
             </button>
- 
+
           </b-card>
         </b-col>
       </b-row>
@@ -105,6 +111,7 @@
 
 
 <script>
+import data from './customers.json'
 import FileUpload from 'vue-upload-component'
 
 export default {
@@ -120,6 +127,11 @@ export default {
           name: '',
           phone: '',
         }
+      }
+    },
+    mounted() {
+      if(this.$route.params.id){
+        this.form = data.find(item => item.id == this.$route.params.id)
       }
     },
     methods: {

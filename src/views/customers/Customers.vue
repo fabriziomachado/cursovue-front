@@ -8,6 +8,7 @@
           <div>{{ 1000000 | numericFormat }}</div>
 
           <b-card class="p-2 h-100" no-body>
+              <!--
               <div class="text-right">
                 <button class="btn btn-success" @click="orderChange">Mudar</button>
                 <b-button @click="orderChange" class="ml-2">Order by {{ order }}</b-button>
@@ -17,9 +18,17 @@
               <div>
                 <b-form-select v-model="order" :options="options"></b-form-select>
               </div>
+              -->
+
+              <SearchBar v-model="filter">
+                <b-btn to="new" type="submit" variant="primary">
+                  <i class="fa fa-plus mr-2"></i>
+                  <span>Novo Cliente</span>
+                </b-btn>
+              </SearchBar>
 
               <b-table
-                class="-table-dark"
+                class="-table-dark mt-2"
                 striped
                 hover
                 :fields="tableFields"
@@ -64,10 +73,15 @@
 
 <script>
 import data from './customers.json'
+import SearchBar from '@/components/SearchBar'
 
 export default {
+   components: {
+     SearchBar
+   },
     data: () => {
      return {
+        filter: "",
         items: data,
         page: 1,
         perPage: 20,
