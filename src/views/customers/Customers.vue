@@ -20,14 +20,15 @@
               </div>
               -->
 
-              <SearchBar v-model="filter">
-                <b-btn to="new" type="submit" variant="primary">
+              <SearchBar @refresh="load" v-model="filter">
+                <b-button class="mt-2 mt-sm-0" to="new" type="submit" variant="primary">
                   <i class="fa fa-plus mr-2"></i>
                   <span>Novo Cliente</span>
-                </b-btn>
+                </b-button>
               </SearchBar>
 
               <b-table
+                responsive
                 class="-table-dark mt-2"
                 striped
                 hover
@@ -74,8 +75,10 @@
 <script>
 import data from './customers.json'
 import SearchBar from '@/components/SearchBar'
+import ConfirmMixin from '@/mixins/confirm'
 
 export default {
+   mixins: [ConfirmMixin],
    components: {
      SearchBar
    },
@@ -90,9 +93,18 @@ export default {
       }
     },
     methods: {
-
-        remove({id, name}) {
-          this.$noty.success(`${name} (${id}) excluido!`)
+        load() {
+          alert('loading')
+        },
+        async remove({id, name}) {
+          const value = await this.$confirm(
+            'Deseja realmente deletar?',
+            'Nao poderá mais desfazer'
+          )
+          console.log(value)
+          if(value){
+            this.$noty.success(`Excluido o registro ${name} (${id})`)
+          }
         },
         orderChange(){
             this.order = this.order === 'id' ? 'name' : 'id';
