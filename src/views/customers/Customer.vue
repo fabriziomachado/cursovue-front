@@ -40,8 +40,18 @@
                     ></b-form-input>
                   </b-form-group>
 
+                  <b-form-group label="Endereço:">
+                    <b-form-input
+                      v-model="form.address"
+                      required
+                      placeholder="Enter address"
+                    ></b-form-input>
+                  </b-form-group>
+
                   <div class="text-right" slot="footer">
                     <b-button type="submit" variant="primary">
+                        <b-spinner small v-if="loading"></b-spinner>
+                        <span class="sr-only">Loading...</span>
                         <i class="fa fa-save mr-2"></i>Salvar
                     </b-button>
                     <b-button class="ml-2" @click="$router.go(-1)" variant="danger">
@@ -111,7 +121,8 @@
 
 
 <script>
-import data from './customers.json'
+//import data from './customers.json'
+import CustomerService from '@/services/customers'
 import FileUpload from 'vue-upload-component'
 
 export default {
@@ -121,47 +132,64 @@ export default {
 
     data() {
       return {
+        loading: false,
         files: [],
         form: {
           email: '',
           name: '',
           phone: '',
+          address: '',
         }
       }
     },
-    mounted() {
+    async mounted() {
+      this.$service = new CustomerService()
+
       if(this.$route.params.id){
-        this.form = data.find(item => item.id == this.$route.params.id)
+        //this.form = data.find(item => item.id == this.$route.params.id)
+        const { data } = await this.$service.findById(this.$route.params.id)
+        this.form = data
       }
     },
     methods: {
-      onSubmit() {
-        console.log(JSON.stringify(this.form))
+      async onSubmit() {
+        try {
+          this.loading = true;
+          await this.$service.save(this.form)
+          this.$router.back()
+          this.$noty.success('Salvo com sucesso!')
+          this.loading = false;
+        } catch (error) {
+          this.$noty.error('erro ao salvar!')
+          console.error(error)
+        }
+        //console.log(JSON.stringify(this.form))
       },
+
       inputFilter(newFile, oldFile, prevent) {
-      if (newFile && !oldFile) {
-        // Before adding a file
-        // Filter system files or hide files
-        if (/(\/|^)(Thumbs\.db|desktop\.ini|\..+)$/.test(newFile.name)) {
-          return prevent()
+        if (newFile && !oldFile) {
+          // Before adding a file
+          // Filter system files or hide files
+          if (/(\/|^)(Thumbs\.db|desktop\.ini|\..+)$/.test(newFile.name)) {
+            return prevent()
+          }
+          // Filter php html js file
+          if (/\.(php5?|html?|jsx?)$/i.test(newFile.name)) {
+            return prevent()
+          }
         }
-        // Filter php html js file
-        if (/\.(php5?|html?|jsx?)$/i.test(newFile.name)) {
-          return prevent()
-        }
-      }
-    },
+      },
       inputFile(newFile, oldFile) {
-      if (newFile && !oldFile) {
-        console.log('add', newFile)
+        if (newFile && !oldFile) {
+          console.log('add', newFile)
+        }
+        if (newFile && oldFile) {
+          console.log('update', newFile)
+        }
+        if (!newFile && oldFile) {
+          console.log('remove', oldFile)
+        }
       }
-      if (newFile && oldFile) {
-        console.log('update', newFile)
-      }
-      if (!newFile && oldFile) {
-        console.log('remove', oldFile)
-      }
-    }
 
     }
   }

@@ -33,7 +33,7 @@
                 striped
                 hover
                 :fields="tableFields"
-                :items="orderedItens">
+                :items="items">
 
                 <template v-slot:cell(email)="{ item }">
                   <a target="_blank" :href="`mailto:${ item.email }`">{{ item.email }}</a>
@@ -62,7 +62,6 @@
                   :per-page="perPage"
                   align="right">
               </b-pagination>
-
           </b-card>
 
         </b-col>
@@ -73,42 +72,60 @@
 </template>
 
 <script>
-import data from './customers.json'
+//import data from './customers.json'
+import CustomerService from '@/services/customers'
 import SearchBar from '@/components/SearchBar'
 import ConfirmMixin from '@/mixins/confirm'
 
 export default {
-   mixins: [ConfirmMixin],
-   components: {
-     SearchBar
-   },
+    components: {
+      SearchBar
+    },
+    mixins: [ConfirmMixin],
     data: () => {
      return {
-        filter: "",
-        items: data,
+        items: [], //data,
+        filter: '',
         page: 1,
-        perPage: 20,
-        total: 100,
-        order: 'id',
+        total: 0,
+        perPage: 5,
+        order: 'id'
+      }
+    },
+    mounted(){
+      this.$service = new CustomerService()
+      this.load()
+    },
+    watch: {
+      page(){
+        this.load()
       }
     },
     methods: {
-        load() {
-          alert('loading')
+        async load() {
+          const { data } = await this.$service.findAll({ limit: this.perPage, page: this.page, filter: this.filter})
+          this.items = data.data
+          this.total = data.total
         },
         async remove({id, name}) {
           const value = await this.$confirm(
             'Deseja realmente deletar?',
             'Nao poderá mais desfazer'
           )
-          console.log(value)
+
           if(value){
-            this.$noty.success(`Excluido o registro ${name} (${id})`)
+            try {
+              await this.$service.remove(id)
+              this.$noty.success(`Excluido o registro ${name} (${id})`)
+              this.load()
+            } catch (error) {
+              this.$noty.error('Erro ao excluir o cliente!')
+              console.error(error)
+            }
           }
         },
         orderChange(){
             this.order = this.order === 'id' ? 'name' : 'id';
-            // Success notification
             this.$noty.success("Your profile has been saved!")
         }
     },
@@ -119,6 +136,7 @@ export default {
           { key: 'name', label: 'Nome'},
           { key: 'phone', label: 'Telefone'},
           { key: 'email', label: 'email'},
+          { key: 'address', label: 'address'},
           { key: 'action', label: '', tdClass: 'text-right'},
         ]
       },
@@ -129,12 +147,12 @@ export default {
           { value: 'phone', text: 'Número de telefone' },
         ]
       },
-        orderedItens () {
-            const compare = (a, b) => (a[this.order] > b[this.order]) - (a[this.order] < b[this.order])
-            const ordered =  [...this.items].sort(compare)
+      orderedItens () {
+          const compare = (a, b) => (a[this.order] > b[this.order]) - (a[this.order] < b[this.order])
+          const ordered =  [...this.items].sort(compare)
 
-            return ordered
-        }
+          return ordered
+      }
     }
 
 }

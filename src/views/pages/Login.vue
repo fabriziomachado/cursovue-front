@@ -47,6 +47,7 @@ export default {
     }
   },
   methods: {
+    /*
     login () {
       console.log(this.usermal, this.password)
       if(login(this.usermal, this.password)) {
@@ -56,6 +57,16 @@ export default {
       this.$noty.error('Usuário ou senha incorretos!');
     
     }
+    */
+    login () {
+      try {
+        login(this.usermal, this.password)
+        this.$router.replace( this.$route.query.redirect || '/')
+      } catch ({response}){
+        this.$noty.error(response.message)
+      }
+    }
+    
   }
 }
 </script>

@@ -6,7 +6,7 @@ export default {
       return Swal.fire({
             title,
             text,
-            type: 'warning',
+           // type: 'warning',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             confirmButtonText: 'Sim'
