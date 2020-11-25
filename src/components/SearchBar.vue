@@ -1,8 +1,8 @@
 <template>
   <b-form inline @submit.prevent="$emit('refresh')">
-    <label>Pesquisa</label>
+    <label class="d-none d-sm-inline">Pesquisa</label>
 
-    <b-input-group class="col">
+    <b-input-group class="col-12 col-sm">
       <b-input
         :value="value"
         @input="onInputHandle"
@@ -18,7 +18,7 @@
      <b-input-group-addon append>
       <b-btn type="submit" variant="success">
       <i class="fa fa-search mr-2"></i>
-      <span>Buscar</span>
+      <span class="d-none d-sm-inline ml-1">Buscar</span>
       </b-btn>
     </b-input-group-addon>
     <slot></slot>
@@ -33,12 +33,17 @@ export default {
       this.$emit('input', $event)
     },
     reset() {
-      this.value = ""
-      this.$emit('input', this.value)
+      //this.value = ""
+      this.$emit('input', '')
       this.$emit('refresh')
 
     }
-  }
+  },
+  //computed: {
+  //  realValue() {
+  //    return this.value
+  //  }
+  //}
 }
 
 </script>

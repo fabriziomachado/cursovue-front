@@ -20,19 +20,20 @@
               </div>
               -->
 
-              <SearchBar v-model="filter">
-                <b-btn to="new" type="submit" variant="primary">
+              <SearchBar @refresh="load" v-model="filter">
+                <b-button class="mt-2 mt-sm-0" to="new" type="submit" variant="primary">
                   <i class="fa fa-plus mr-2"></i>
                   <span>Novo Cliente</span>
-                </b-btn>
+                </b-button>
               </SearchBar>
 
               <b-table
+                responsive
                 class="-table-dark mt-2"
                 striped
                 hover
                 :fields="tableFields"
-                :items="orderedItens">
+                :items="items">
 
                 <template v-slot:cell(email)="{ item }">
                   <a target="_blank" :href="`mailto:${ item.email }`">{{ item.email }}</a>
@@ -61,7 +62,6 @@
                   :per-page="perPage"
                   align="right">
               </b-pagination>
-
           </b-card>
 
         </b-col>
@@ -72,31 +72,60 @@
 </template>
 
 <script>
-import data from './customers.json'
+//import data from './customers.json'
+import CustomerService from '@/services/customers'
 import SearchBar from '@/components/SearchBar'
+import ConfirmMixin from '@/mixins/confirm'
 
 export default {
-   components: {
-     SearchBar
-   },
+    components: {
+      SearchBar
+    },
+    mixins: [ConfirmMixin],
     data: () => {
      return {
-        filter: "",
-        items: data,
+        items: [], //data,
+        filter: '',
         page: 1,
-        perPage: 20,
-        total: 100,
-        order: 'id',
+        total: 0,
+        perPage: 5,
+        order: 'id'
+      }
+    },
+    mounted(){
+      this.$service = new CustomerService()
+      this.load()
+    },
+    watch: {
+      page(){
+        this.load()
       }
     },
     methods: {
+        async load() {
+          const { data } = await this.$service.findAll({ limit: this.perPage, page: this.page, filter: this.filter})
+          this.items = data.data
+          this.total = data.total
+        },
+        async remove({id, name}) {
+          const value = await this.$confirm(
+            'Deseja realmente deletar?',
+            'Nao poderá mais desfazer'
+          )
 
-        remove({id, name}) {
-          this.$noty.success(`${name} (${id}) excluido!`)
+          if(value){
+            try {
+              await this.$service.remove(id)
+              this.$noty.success(`Excluido o registro ${name} (${id})`)
+              this.load()
+            } catch (error) {
+              this.$noty.error('Erro ao excluir o cliente!')
+              console.error(error)
+            }
+          }
         },
         orderChange(){
             this.order = this.order === 'id' ? 'name' : 'id';
-            // Success notification
             this.$noty.success("Your profile has been saved!")
         }
     },
@@ -107,6 +136,7 @@ export default {
           { key: 'name', label: 'Nome'},
           { key: 'phone', label: 'Telefone'},
           { key: 'email', label: 'email'},
+          { key: 'address', label: 'address'},
           { key: 'action', label: '', tdClass: 'text-right'},
         ]
       },
@@ -117,12 +147,12 @@ export default {
           { value: 'phone', text: 'Número de telefone' },
         ]
       },
-        orderedItens () {
-            const compare = (a, b) => (a[this.order] > b[this.order]) - (a[this.order] < b[this.order])
-            const ordered =  [...this.items].sort(compare)
+      orderedItens () {
+          const compare = (a, b) => (a[this.order] > b[this.order]) - (a[this.order] < b[this.order])
+          const ordered =  [...this.items].sort(compare)
 
-            return ordered
-        }
+          return ordered
+      }
     }
 
 }
