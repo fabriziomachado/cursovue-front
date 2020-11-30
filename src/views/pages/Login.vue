@@ -58,12 +58,12 @@ export default {
     
     }
     */
-    login () {
+    async login () {
       try {
-        login(this.usermal, this.password)
+        await login(this.usermal, this.password)
         this.$router.replace( this.$route.query.redirect || '/')
       } catch ({response}){
-        this.$noty.error(response.message)
+        this.$noty.error(response.data.message)
       }
     }
     

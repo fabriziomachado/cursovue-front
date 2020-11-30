@@ -2,7 +2,7 @@
   <AppHeaderDropdown right no-caret>
     <template slot="header">
       <img
-        src="img/avatars/6.jpg"
+        :src="profileImage"
         class="img-avatar"
         alt="admin@bootstrapmaster.com" />
     </template>\
@@ -18,11 +18,25 @@
 
 <script>
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
-import { logout } from "@/services/auth";
+import { logout, getProfile } from "@/services/auth";
 export default {
   name: 'DefaultHeaderDropdownAccnt',
   components: {
     AppHeaderDropdown
+  },
+  data () {
+      return {
+          profile: {}
+      }
+  },
+  async mounted () {
+      this.profile = await getProfile()
+  },
+  computed: {
+    profileImage(){
+      return this.profile.url ?? 'img/profile.png'
+    //return  'img/profile.png'
+    }
   },
   methods: {
     logout(){

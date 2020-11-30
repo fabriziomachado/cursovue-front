@@ -18,6 +18,9 @@
 </template>
 
 <script>
+import { getClient } from '@/services/http'
+
+
 export default {
   props: {
     accept: {
@@ -43,7 +46,7 @@ export default {
     }
   },
   methods: {
-    onFileChange(){
+   async onFileChange(){
       this.isUploading = true
       try {
         const [ file ]  = this.$refs.inputFileUpload.files
@@ -55,8 +58,11 @@ export default {
           formData.append(this.fildName, file)
           // chamar API com headers
           // post(this.uploadURL, formData, { headers: {'Content-Type':'multipart/form-data'}})
+          
+          const header = {'Content-Type':'multipart/form-data'}
+          const { data } = await getClient(header).post(this.uploadURL, formData)
 
-          this.$emit('uploaded')
+          this.$emit('uploaded', data)
         }
 
       } catch (error) {

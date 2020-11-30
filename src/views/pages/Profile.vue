@@ -4,14 +4,15 @@
       <b-row>
 
         <b-col cols="12" md="4">
-          <!-- AVATR -->
+          <!-- AVATAR -->
           <b-card class="text-center" >
             <b-img center width="220" :src="profileImage" />
                <!-- <b-button class="mt-3" variant="success">Alterar</b-button> -->
 
               <FileUpload
+                fildName="image"
                 accept="image/*"
-                uploadURL="@me/upload"
+                uploadURL="@me/image"
                 @uploaded="onFileUpload"
                 @error="onError"
               >
@@ -145,8 +146,10 @@ export default {
       }
 
     },
-    onFileUpload() {
-      this.$noty.success('arquivo carregado com sucesso')
+    onFileUpload(newProfile) {
+      this.$noty.success(newProfile.message)
+      this.profile = newProfile.data
+      console.log(JSON.stringify(this.profile))
     },
     onError(error) {
         this.$noty.error('Problemas no upload')
