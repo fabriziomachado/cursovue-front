@@ -1,14 +1,7 @@
 import { getClient } from './http'
 
-//const users = [
-//    { username: 'admin', password: 'admin', token: 'token-a'},
-//    { username: 'user', password: 'user', token: 'token-b'},
-//  ]
-
-
-  
 export async function login(email, password) {
-    
+
     //const user = users.find(user => user.email === email)
     const client = getClient()
 
@@ -16,26 +9,41 @@ export async function login(email, password) {
       email,
       password
     })
-    console.log(response.status);
-    
-    //if(user && user.password === password){
-    if( response.status == 'success' ){
+
+    if( response.status === 'success' ){
       localStorage.setItem('token', response.data.token)
       return true
     }
 
-    throw new Error({response}) //return false
+    throw new Error({response})
 }
 
 export function getToken() {
   return localStorage.getItem('token')
 }
-  
+
 export function logout(callback) {
     localStorage.removeItem('token')
     if(callback) callback()
 }
-  
+
 export function isLogged() {
     return !!localStorage.getItem('token') //
+}
+
+export async function getProfile() {
+  const { data: response} = await getClient().get('/@me')
+  return response.data
+}
+
+export async function updateProfile( profile ) {
+  const { data } = await getClient().put('/@me',  profile )
+  return data
+}
+
+export async function updatePassword( passwords ) {
+  console.log(JSON.stringify(passwords))
+  const { data } = await getClient().put('/@me/password', passwords)
+  return data
+
 }
