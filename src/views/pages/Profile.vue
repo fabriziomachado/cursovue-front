@@ -20,7 +20,7 @@
               Alterar
               </FileUpload>
 
-              <b-button class="mt-3 ml-2" variant="danger">Remover</b-button>
+              <b-button class="mt-3 ml-2"  @click="removeProfileImage" variant="danger">Remover</b-button>
           </b-card>
         </b-col>
 
@@ -108,8 +108,9 @@
 </template>
 
 <script>
+import { store } from "@/store.js";
 import FileUpload from '@/components/FileUpload.vue'
-import { getProfile, updatePassword, updateProfile } from '@/services/auth'
+import { getProfile, updatePassword, updateProfile, removeProfileImage } from '@/services/auth'
 
 export default {
   components: { FileUpload },
@@ -129,16 +130,22 @@ export default {
 
       return true
     },
+    async removeProfileImage() {
+        await removeProfileImage(this.profile)
+        this.profile = await getProfile()
+
+        store.state.profileURL = 'img/profile.png'
+
+        this.$noty.success('Imagem removida com sucesso!')
+    },
     async updatePassword() {
-      console.log(JSON.stringify(this.passwords))
+      //console.log(JSON.stringify(this.passwords))
 
       try {
         const {status, message} = await updatePassword(this.passwords)
         this.$noty.[status](message)
-
         return true
       } catch (  { response: { data: { status, message } }} ) {
-        //console.log(`update password error! - ${ JSON.stringify(error)}`)
         // error.response.data.message|status
         //const { status, message } = error.response.data
         this.$noty.[status](message)
@@ -149,12 +156,16 @@ export default {
     onFileUpload(newProfile) {
       this.$noty.success(newProfile.message)
       this.profile = newProfile.data
-      console.log(JSON.stringify(this.profile))
+
+      store.state.profileURL = newProfile.data.url
+
+      //console.log( store.state)
+      //console.log(JSON.stringify(this.profile))
     },
     onError(error) {
         this.$noty.error('Problemas no upload')
         console.error(error)
-    }
+    },
   },
   computed: {
     profileImage(){

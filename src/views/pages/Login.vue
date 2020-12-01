@@ -22,7 +22,7 @@
                       <b-button @click.prevent="login()" variant="primary" class="px-4" type="submit">Login</b-button>
                     </b-col>
                     <b-col cols="6" class="text-right">
-                      <b-button variant="link" class="px-0">Forgot password?</b-button>
+                      <b-button variant="link" to="/register" class="px-0">Registrar-se?</b-button>
                     </b-col>
                   </b-row>
                 </b-form>
@@ -47,17 +47,6 @@ export default {
     }
   },
   methods: {
-    /*
-    login () {
-      console.log(this.usermal, this.password)
-      if(login(this.usermal, this.password)) {
-        this.$router.replace( this.$route.query.redirect || '/')
-      }
-    
-      this.$noty.error('Usuário ou senha incorretos!');
-    
-    }
-    */
     async login () {
       try {
         await login(this.usermal, this.password)
@@ -66,7 +55,7 @@ export default {
         this.$noty.error(response.data.message)
       }
     }
-    
+
   }
 }
 </script>

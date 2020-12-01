@@ -28,7 +28,12 @@ export function logout(callback) {
 }
 
 export function isLogged() {
-    return !!localStorage.getItem('token') //
+    return !!localStorage.getItem('token')
+}
+
+export async function registerUser( user ) {
+  const { data } = await getClient().post('/register', user)
+  return data
 }
 
 export async function getProfile() {
@@ -38,6 +43,11 @@ export async function getProfile() {
 
 export async function updateProfile( profile ) {
   const { data } = await getClient().put('/@me',  profile )
+  return data
+}
+
+export async function removeProfileImage( profile ) {
+  const { data } = await getClient().delete('/@me/image', profile)
   return data
 }
 

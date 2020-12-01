@@ -1,8 +1,9 @@
 <template>
   <AppHeaderDropdown right no-caret>
+
     <template slot="header">
       <img
-        :src="profileImage"
+        :src="storeState.profileURL"
         class="img-avatar"
         alt="admin@bootstrapmaster.com" />
     </template>\
@@ -17,6 +18,7 @@
 </template>
 
 <script>
+import { store } from "@/store.js";
 import { HeaderDropdown as AppHeaderDropdown } from '@coreui/vue'
 import { logout, getProfile } from "@/services/auth";
 export default {
@@ -26,16 +28,24 @@ export default {
   },
   data () {
       return {
-          profile: {}
+          profile: {},
+          storeState: store.state
       }
   },
   async mounted () {
       this.profile = await getProfile()
+      //this.storeState.profileURL = this.profile.url
+      store.state.profileURL = this.profile.url ?? 'img/profile.png'
+
   },
   computed: {
     profileImage(){
+      //console.log(this.storeState.profileURL)
+      //if(this.storeState.profileURL) return this.storeState.profileURL
+
       return this.profile.url ?? 'img/profile.png'
     //return  'img/profile.png'
+
     }
   },
   methods: {
