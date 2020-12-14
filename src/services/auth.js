@@ -43,7 +43,7 @@ export async function getProfile() {
 
 export async function updateProfile( profile ) {
   const { data } = await getClient().put('/@me',  profile )
-  return data
+  return data.data
 }
 
 export async function removeProfileImage( profile ) {

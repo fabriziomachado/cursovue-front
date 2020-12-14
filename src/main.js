@@ -7,6 +7,8 @@ import VueFilterDateFormat from '@vuejs-community/vue-filter-date-format'
 import VueFilterNumericFormat from '@vuejs-community/vue-filter-numeric-format'
 import VueNoty from 'vuejs-noty'
 
+import store from './store/index' // vuex
+
 //import VueUploadComponent from 'vue-upload-component'
 //Vue.component('file-upload', VueUploadComponent)
 
@@ -57,6 +59,7 @@ Vue.use(BootstrapVue)
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: {
     App
