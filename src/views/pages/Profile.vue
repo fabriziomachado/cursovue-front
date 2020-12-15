@@ -108,9 +108,11 @@
 </template>
 
 <script>
-import { store } from "@/store.js";
+//import { store } from "@/store.js";
 import FileUpload from '@/components/FileUpload.vue'
 import { getProfile, updatePassword, updateProfile, removeProfileImage } from '@/services/auth'
+
+import { mapGetters, mapMutations, mapState } from 'vuex'
 
 export default {
   components: { FileUpload },
@@ -124,17 +126,24 @@ export default {
     this.profile = await getProfile()
   },
   methods: {
+    ...mapMutations('profile', ['setUserProfile']),
+
     async updateProfile() {
-      const  {status, message}  = await updateProfile(this.profile)
-      this.$noty.[status](message)
+      this.profile = await updateProfile(this.profile)
+      console.log(this.profile)
+      this.setUserProfile(this.profile)  // store
+      //const {status, message} = this.profile
+      this.$noty.success('Salvo com sucesso')
 
       return true
     },
     async removeProfileImage() {
         await removeProfileImage(this.profile)
+        this.setUserProfile(this.profile)
         this.profile = await getProfile()
+        this.setUserProfile(this.profile) // store
 
-        store.state.profileURL = 'img/profile.png'
+        //store.state.profileURL = 'img/profile.png'
 
         this.$noty.success('Imagem removida com sucesso!')
     },
@@ -156,21 +165,23 @@ export default {
     onFileUpload(newProfile) {
       this.$noty.success(newProfile.message)
       this.profile = newProfile.data
+      this.setUserProfile(this.profile)
 
-      store.state.profileURL = newProfile.data.url
+      //store.state.profileURL = newProfile.data.url
 
       //console.log( store.state)
       //console.log(JSON.stringify(this.profile))
     },
     onError(error) {
-        this.$noty.error('Problemas no upload')
+        this.$noty.error(`Problemas no upload${error.message}`)
         console.error(error)
     },
   },
   computed: {
-    profileImage(){
-      return this.profile.url ?? 'img/profile.png'
-    }
+    ...mapGetters('profile',[ 'profileImage' ])
+
+
+    //profileImage(){ return this.profile.url ?? 'img/profile.png'}
   }
 }
 </script>
